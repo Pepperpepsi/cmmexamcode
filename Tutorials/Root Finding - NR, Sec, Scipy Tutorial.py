@@ -14,10 +14,8 @@ import scipy
 
 x = np.arange(-10, 10, 0.2)
 y = x**2 + 4*x - 12
-plt.plot(x, y)
-plt.show()
 
-def secant(f,a,b,N):
+def false_pos(f,a,b,N):
     # f = function [manually define]
     # a, b = search interval
     # N = Number of iterations
@@ -51,8 +49,26 @@ def secant(f,a,b,N):
     return a_n - f(a_n)*(b_n - a_n)/(f(b_n) - f(a_n))
 
 f = lambda x: x**2 + 4*x - 12
-solution = secant(f,0,10,25)
-print(solution)
+solution = false_pos(f,0,10,25)
+print(f'The solution of regula falsi is: {solution}')
+
+def secant(f, x1, x2, N):
+    y1, y2 = f(x1), f(x2)
+    while True:
+        root = (x1*y2 - x2*y1)/(y2 - y1)
+        y_root = f(root)
+        if y_root == 0:
+            return y_root
+        yield root
+        x1 = x2
+        y1 = y2
+        x2 = root
+        y2 = y_root
+    
+f = lambda x: x**2 + 4*x - 12
+solution = false_pos(f,0,10,25)
+print(f'The solution of secant method is: {solution}')
+
 
 def newton(f,Df,x0,epsilon,max_iter):
     # f = function [manually define]
@@ -90,10 +106,7 @@ x0 = 1
 epsilon = 0.001
 max_iter = 100
 solution = newton(f,df,x0,epsilon,max_iter)
-print(f'The solution to the Newtown method is {solution}')
-
-
-
+print(f'The solution of the Newtown method is: {solution}')
 
 
 
@@ -115,3 +128,6 @@ ddf = lambda x: 2
 
 scipy.optimize.newton(f, x0, fprime = df, tol = 0.001, maxiter = 3, fprime2 = ddf)
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.newton.html
+
+plt.plot(x, y)
+plt.show()
