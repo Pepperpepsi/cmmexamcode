@@ -110,6 +110,53 @@ print(f'The solution of the Newtown method is: {solution}')
 
 
 
+def newton_raphson_complex(func, derivative, initial_guess, max_iter=100, tolerance=1e-6):
+
+    root = initial_guess
+    
+    for _ in range(max_iter):
+        f_value = func(root)
+        f_prime_value = derivative(root)
+        
+        # Avoid division by zero if the derivative is zero.
+        if f_prime_value == 0:
+            new_root = root
+        else:
+            new_root = root - f_value / f_prime_value
+        
+        # Check if the change in the root estimate is within the tolerance.
+        if abs(new_root - root) < tolerance:
+            return new_root
+        
+        root = new_root
+    
+    return root
+
+# Define the complex function and its derivative based on the polynomial and its derivative.
+def complex_function(ω):
+    return np.polyval(coeffs, ω)
+
+def complex_derivative(ω):
+    return np.polyval(np.polyder(coeffs), ω)
+
+# Initial guess for the roots - these are complex numbers chosen to start the iteration.
+initial_guesses = [complex(-10, 0), complex(0, -1), complex(2, 10), complex(-1, 0)]
+
+# Coefficients of the characteristic polynomial.
+coeffs = [1, 24, 4500, 18000, 2250000]
+
+# Call the Newton-Raphson method to find the roots of the polynomial.
+roots = []
+for initial_guess in initial_guesses:
+    root = newton_raphson_complex(complex_function, complex_derivative, initial_guess)
+    roots.append(root)
+
+# Print the found roots to the console.
+print('The roots of the fourth order polynomial are', roots)
+
+
+
+
 ### SciPy
 from scipy import optimize
 def f(x):
@@ -131,3 +178,5 @@ scipy.optimize.newton(f, x0, fprime = df, tol = 0.001, maxiter = 3, fprime2 = dd
 
 plt.plot(x, y)
 plt.show()
+
+
